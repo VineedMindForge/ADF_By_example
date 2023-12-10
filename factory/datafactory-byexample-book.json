@@ -1,0 +1,9 @@
+{
+	"name": "datafactory-byexample-book",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "54318db1-24b4-4f37-8529-76a9a3b184a3",
+		"tenantId": "860f8e25-d88d-4b30-a665-63547dbb7932"
+	}
+}
