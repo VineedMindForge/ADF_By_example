@@ -1,5 +1,5 @@
 {
-	"name": "Copy to SQL DB",
+	"name": "ImportSweetTartSales",
 	"properties": {
 		"activities": [
 			{
