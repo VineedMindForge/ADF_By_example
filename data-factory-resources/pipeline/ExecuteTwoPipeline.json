@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Execute Pipeline1",
+				"name": "SweetTreats",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -20,11 +20,11 @@
 				}
 			},
 			{
-				"name": "Execute Pipeline2",
+				"name": "Dessert4All",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Execute Pipeline1",
+						"activity": "SweetTreats",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -44,6 +44,11 @@
 				}
 			}
 		],
+		"variables": {
+			"MyVariable": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "Chapter 5"
 		},
