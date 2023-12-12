@@ -1,0 +1,52 @@
+{
+	"name": "ExecuteTwoPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ImportSTFormatFolder",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"WildcardFolderPath": "azure-data-factory-by-example-main/SampleData/SweetTreats",
+						"WildcardFileName": "*.csv"
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ImportSTFormatFolder",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"WildcardFolderPath": "azure-data-factory-by-example-main/SampleData/Desserts4All",
+						"WildcardFileName": "*.csv"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Chapter 5"
+		},
+		"annotations": []
+	}
+}
