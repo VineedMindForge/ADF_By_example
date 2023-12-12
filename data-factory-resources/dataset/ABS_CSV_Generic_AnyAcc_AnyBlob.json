@@ -6,16 +6,22 @@
 			"type": "LinkedServiceReference",
 			"parameters": {
 				"ConnectionSecret": {
-					"value": "@dataset().connectionsecret",
+					"value": "@dataset().linkedinsecret",
 					"type": "Expression"
 				}
 			}
 		},
 		"parameters": {
-			"connectionsecret": {
+			"container": {
 				"type": "string"
 			},
-			"container": {
+			"folderpath": {
+				"type": "string"
+			},
+			"filepath": {
+				"type": "string"
+			},
+			"linkedinsecret": {
 				"type": "string"
 			}
 		},
@@ -27,6 +33,14 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().filepath",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folderpath",
+					"type": "Expression"
+				},
 				"container": {
 					"value": "@dataset().container",
 					"type": "Expression"
