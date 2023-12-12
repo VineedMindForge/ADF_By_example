@@ -1,0 +1,45 @@
+{
+	"name": "ABS_JSON_SecureADF",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SecureStorageKeyVaultLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Container": {
+				"type": "string",
+				"defaultValue": "sampledata"
+			},
+			"Directory": {
+				"type": "string"
+			},
+			"Filepath": {
+				"type": "string",
+				"defaultValue": "*.json"
+			}
+		},
+		"folder": {
+			"name": "Chapter 5"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().Filepath",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().Directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().Container",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	}
+}
