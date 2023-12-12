@@ -20,6 +20,8 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
+							"wildcardFolderPath": "azure-data-factory-by-example-main/SampleData/SugarCube",
+							"wildcardFileName": "*.json",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -39,12 +41,56 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['Column_1']"
+									"path": "['Product']"
+								},
+								"sink": {
+									"name": "Product",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Column_2']"
+									"path": "['ManufacturerProductCode']"
+								},
+								"sink": {
+									"name": "ManufacturerProductCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Units']"
+								},
+								"sink": {
+									"name": "UnitsSold",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "['Value']"
+								},
+								"sink": {
+									"name": "SalesValueUSD",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Month']"
+								},
+								"sink": {
+									"name": "SalesMonth",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Company']"
+								},
+								"sink": {
+									"name": "Retailer",
+									"type": "String"
 								}
 							}
 						],
@@ -54,12 +100,12 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ABS_JSON_secureadf",
+						"referenceName": "ABS_JSON_SecureADF",
 						"type": "DatasetReference",
 						"parameters": {
 							"Container": "sampledata",
-							"Directory": "azure-data-factory-by-example-main/SampleData/SugarCube",
-							"File": "*.json"
+							"Directory": ".",
+							"Filepath": "."
 						}
 					}
 				],
