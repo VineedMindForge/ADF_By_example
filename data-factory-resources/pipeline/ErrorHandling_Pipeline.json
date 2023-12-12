@@ -1,0 +1,93 @@
+{
+	"name": "ErrorHandling_Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Activity1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MyVariable",
+					"value": "@string(int('not an int'))"
+				}
+			},
+			{
+				"name": "Activity2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Activity4",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Activity1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MyVariable",
+					"value": "asd"
+				}
+			},
+			{
+				"name": "Activity3",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Activity2",
+						"dependencyConditions": [
+							"Skipped",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MyVariable",
+					"value": "asd"
+				}
+			},
+			{
+				"name": "Activity4",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MyVariable",
+					"value": "qwe"
+				}
+			}
+		],
+		"variables": {
+			"MyVariable": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Chapter 6"
+		},
+		"annotations": []
+	}
+}
