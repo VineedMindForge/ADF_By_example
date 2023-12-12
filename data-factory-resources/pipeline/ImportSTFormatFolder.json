@@ -238,6 +238,9 @@
 			"RunSeqNo": {
 				"type": "String",
 				"defaultValue": "-1"
+			},
+			"MyVariable": {
+				"type": "String"
 			}
 		},
 		"folder": {
