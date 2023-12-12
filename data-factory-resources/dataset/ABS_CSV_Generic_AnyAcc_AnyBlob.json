@@ -1,0 +1,42 @@
+{
+	"name": "ABS_CSV_Generic_AnyAcc_AnyBlob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AnyStorageAccountStorage",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"ConnectionSecret": {
+					"value": "@dataset().connectionsecret",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"connectionsecret": {
+				"type": "string"
+			},
+			"container": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Chapter 5"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
