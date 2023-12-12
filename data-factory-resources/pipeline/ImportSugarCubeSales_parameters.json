@@ -100,12 +100,12 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ABS_JSON_secureadf",
+						"referenceName": "ABS_JSON_SecureADF",
 						"type": "DatasetReference",
 						"parameters": {
 							"Container": "sampledata",
-							"Directory": "azure-data-factory-by-example-main/SampleData/SugarCube",
-							"File": "*.json"
+							"Directory": ".",
+							"Filepath": "."
 						}
 					}
 				],
