@@ -1,0 +1,34 @@
+{
+	"name": "Azure_SQL_Parameter",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfsqldb",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"tablename": {
+				"type": "string"
+			},
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			}
+		},
+		"folder": {
+			"name": "Chapter 5"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tablename",
+				"type": "Expression"
+			}
+		}
+	}
+}
