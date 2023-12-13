@@ -48,7 +48,6 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"preCopyScript": "truncate table [dbo].[Sales_LOAD]",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
@@ -319,9 +318,9 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Import Sales Data",
+						"activity": "Stored procedure1",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -403,6 +402,33 @@
 							]
 						}
 					]
+				}
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Import Sales Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[PersistLoadedSales]"
+				},
+				"linkedServiceName": {
+					"referenceName": "adfsqldb",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
