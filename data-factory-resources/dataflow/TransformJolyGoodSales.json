@@ -13,11 +13,45 @@
 						"type": "DatasetReference"
 					},
 					"name": "JollyGoodSales"
+				},
+				{
+					"linkedService": {
+						"referenceName": "Adfbyeg_SecureStorageAcc",
+						"type": "LinkedServiceReference"
+					},
+					"name": "ExchangeRates"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ASQL_dboSalesLoad",
+						"type": "DatasetReference"
+					},
+					"name": "dboSalesLoad"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ExcludeMonthTotals"
+				},
+				{
+					"name": "RemoveAllNonUSDCurrencies"
+				},
+				{
+					"name": "StandardizeCurrency"
+				},
+				{
+					"name": "CreateColumnforSQLDb"
+				},
+				{
+					"name": "SelectRelevantCols"
+				}
+			],
 			"scriptLines": [
+				"parameters{",
+				"     RunSeqNo as string ($RunSeqNo)",
+				"}",
 				"source(output(",
 				"          Period as date,",
 				"          Product as string,",
@@ -27,7 +61,70 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> JollyGoodSales"
+				"     ignoreNoFilesFound: false) ~> JollyGoodSales",
+				"source(output(",
+				"          FromCurrency as string,",
+				"          ToCurrency as string,",
+				"          Date as date,",
+				"          ExchangeRate as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'excel',",
+				"     container: 'sampledata',",
+				"     folderPath: 'azure-data-factory-by-example-main/SampleData',",
+				"     fileName: 'ExchangeRates.xlsx',",
+				"     sheetName: 'Sheet1',",
+				"     firstRowAsHeader: true) ~> ExchangeRates",
+				"JollyGoodSales filter(Product != 'Month Total') ~> ExcludeMonthTotals",
+				"ExchangeRates filter(ToCurrency=='USD') ~> RemoveAllNonUSDCurrencies",
+				"ExcludeMonthTotals, RemoveAllNonUSDCurrencies lookup(Currency == FromCurrency",
+				"     && Period == Date,",
+				"     multiple: true,",
+				"     broadcast: 'auto')~> StandardizeCurrency",
+				"StandardizeCurrency derive(SalesValueUSD = {Units Sold}*{Unit Price}*ExchangeRate,",
+				"          Retailer = \"Jolly Good Ltd\",",
+				"          RunSeqNo = 1) ~> CreateColumnforSQLDb",
+				"CreateColumnforSQLDb select(mapColumn(",
+				"          SalesMonth = Period,",
+				"          Product,",
+				"          UnitsSold = {Units Sold},",
+				"          SalesValueUSD,",
+				"          Retailer,",
+				"          RunSeqNo",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectRelevantCols",
+				"SelectRelevantCols sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          RowId as integer,",
+				"          Retailer as string,",
+				"          SalesMonth as date,",
+				"          Product as string,",
+				"          ManufacturerProductCode as string,",
+				"          SalesValueUSD as decimal(18,2),",
+				"          UnitsSold as integer,",
+				"          SourceFileName as string,",
+				"          RunSeqNo as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Retailer,",
+				"          SalesMonth,",
+				"          Product,",
+				"          SalesValueUSD,",
+				"          UnitsSold,",
+				"          RunSeqNo",
+				"     )) ~> dboSalesLoad"
 			]
 		}
 	}
