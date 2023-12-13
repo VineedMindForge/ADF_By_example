@@ -50,7 +50,7 @@
 			],
 			"scriptLines": [
 				"parameters{",
-				"     RunSeqNo as string ($RunSeqNo)",
+				"     RunSeqNo as integer (-1)",
 				"}",
 				"source(output(",
 				"          Period as date,",
@@ -85,7 +85,7 @@
 				"     broadcast: 'auto')~> StandardizeCurrency",
 				"StandardizeCurrency derive(SalesValueUSD = {Units Sold}*{Unit Price}*ExchangeRate,",
 				"          Retailer = \"Jolly Good Ltd\",",
-				"          RunSeqNo = 1) ~> CreateColumnforSQLDb",
+				"          RunSeqNo = $RunSeqNo) ~> CreateColumnforSQLDb",
 				"CreateColumnforSQLDb select(mapColumn(",
 				"          SalesMonth = Period,",
 				"          Product,",
