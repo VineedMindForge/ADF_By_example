@@ -424,7 +424,15 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PersistLoadedSales]"
+					"storedProcedureName": "[dbo].[PersistLoadedSales]",
+					"storedProcedureParameters": {
+						"RunSeqNo": {
+							"value": {
+								"value": "@variables('RunSeqNo')",
+								"type": "Expression"
+							}
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "adfsqldb",
