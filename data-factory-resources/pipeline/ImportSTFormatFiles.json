@@ -1,0 +1,119 @@
+{
+	"name": "ImportSTFormatFiles",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get file list",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ABS_CSV_Generic_AnyAcc_AnyBlob",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "sampledata",
+							"folderpath": {
+								"value": "@pipeline().parameters.FolderPath",
+								"type": "Expression"
+							},
+							"filepath": " ",
+							"linkedinsecret": "StorageAccountConnectionString"
+						}
+					},
+					"fieldList": [
+						"exists",
+						"itemType",
+						"itemName",
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get file list",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get file list').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "ImportSTFormatFile_UsingGenericCSV_LogFailure",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Directory": {
+										"value": "@pipeline().parameters.FolderPath",
+										"type": "Expression"
+									},
+									"File": {
+										"value": "@item().name",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Directory": {
+				"type": "string"
+			},
+			"File": {
+				"type": "string",
+				"defaultValue": "*.csv"
+			},
+			"FolderPath": {
+				"type": "string",
+				"defaultValue": "azure-data-factory-by-example-main/SampleData/NaughtyButNice"
+			}
+		},
+		"variables": {
+			"RunSeqNo": {
+				"type": "String",
+				"defaultValue": "-1"
+			},
+			"MyVariable": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Chapter 6"
+		},
+		"annotations": []
+	}
+}
