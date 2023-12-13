@@ -93,7 +93,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Import Sales Data",
+						"activity": "If rows skipped",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -294,6 +294,92 @@
 				"linkedServiceName": {
 					"referenceName": "adfsqldb",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "If rows skipped",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Import Sales Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Import Sales Data').output.rowsSkipped,0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Copy skipped rows to sink",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ABS_CSV_Generic_AnyAcc_AnyBlob",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "output",
+										"folderpath": {
+											"value": "@join(skip(split(activity('Import sales data').output.logFilePath, '/'), 1), '/')",
+											"type": "Expression"
+										},
+										"filepath": "*",
+										"linkedinsecret": "StorageAccountConnectionString"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ABS_SQL_AnySchemaAnyTable",
+									"type": "DatasetReference",
+									"parameters": {
+										"Schema": "dbo",
+										"Table": "LoadingError"
+									}
+								}
+							]
+						}
+					]
 				}
 			}
 		],
